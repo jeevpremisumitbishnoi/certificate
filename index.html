@@ -26,31 +26,32 @@ body{
   padding:15px;
 }
 
-.form input, .form button{
+.form input,.form button{
   width:100%;
   margin:8px 0;
+  padding:8px;
 }
 
 .preview{
   width:70%;
-  padding:20px;
+  padding:15px;
 }
 
 .certificate{
   background:#fff;
   border:8px solid green;
-  padding:25px;
-  text-align:center;
+  padding:30px;
   position:relative;
+  text-align:center;
 }
 
+/* Logos */
 .logo-left{
   position:absolute;
   top:20px;
   left:20px;
   width:80px;
 }
-
 .logo-right{
   position:absolute;
   top:20px;
@@ -58,21 +59,48 @@ body{
   width:80px;
 }
 
-.user-photo{
-  width:140px;
-  margin:15px auto;
-  display:block;
+/* Certificate Number */
+.cert-no{
+  position:absolute;
+  top:20px;
+  left:50%;
+  transform:translateX(-50%);
+  font-weight:bold;
+  font-size:14px;
 }
 
-.buttons{
-  margin-top:15px;
+/* Photo */
+.user-photo{
+  width:160px;
+  margin:20px auto;
+  display:block;
+  border:3px solid green;
+}
+
+/* Name */
+.name{
+  font-size:26px;
+  font-weight:bold;
+  margin:15px 0;
+}
+
+.footer{
+  margin-top:25px;
+  font-size:14px;
+  font-style:italic;
+}
+
+.site{
+  margin-top:8px;
+  font-size:12px;
+  color:#555;
 }
 
 .buttons button{
   padding:10px;
   margin:5px;
   background:green;
-  color:white;
+  color:#fff;
   border:none;
   font-size:16px;
 }
@@ -83,103 +111,111 @@ body{
 
 <div class="container">
 
-  <!-- USER FORM -->
-  <div class="form">
-    <h3>User Details</h3>
+<!-- FORM -->
+<div class="form">
+  <h3>User Details</h3>
+  <input type="text" id="username" placeholder="User Name">
+  <input type="file" accept="image/*" onchange="loadPhoto(this)">
+  <button onclick="generate()">Generate Certificate</button>
 
-    <label>User Name</label>
-    <input type="text" id="username" oninput="updateName()" placeholder="Enter Name">
-
-    <label>User Photo</label>
-    <input type="file" accept="image/*" onchange="loadUserPhoto(event)">
+  <div class="buttons">
+    <button onclick="downloadImage()">Download</button>
+    <button onclick="shareImage()">Share</button>
   </div>
+</div>
 
-  <!-- CERTIFICATE -->
-  <div class="preview">
+<!-- PREVIEW -->
+<div class="preview">
+  <div class="certificate" id="certificate">
 
-    <div class="certificate" id="certificate">
+    <div class="cert-no" id="certNo">Certificate No: 0</div>
 
-      <!-- FIXED LOGOS -->
-      <img src="left-logo.png" class="logo-left">
-      <img src="right-logo.png" class="logo-right">
+    <img src="logo-left.png" class="logo-left">
+    <img src="logo-right.png" class="logo-right">
 
-      <h1>प्रमाण पत्र</h1>
-      <p>खेजड़ी बचाओ – पर्यावरण बचाओ अभियान</p>
+    <h1>प्रमाण पत्र</h1>
+    <p>खेजड़ी बचाओ – पर्यावरण बचाओ अभियान</p>
 
-      <img id="userPhoto" class="user-photo">
+    <img id="userPhoto" class="user-photo">
 
-      <h2 id="nameText">User Name</h2>
+    <div class="name" id="cname">__________</div>
 
-      <p>
-        यह प्रमाणित किया जाता है कि उपरोक्त व्यक्ति ने  
-        पर्यावरण संरक्षण अभियान में सक्रिय सहभागिता निभाई।
-      </p>
+    <p>
+      यह प्रमाणित किया जाता है कि उपरोक्त व्यक्ति ने
+      पर्यावरण संरक्षण अभियान में सक्रिय सहभागिता निभाई।
+    </p>
 
-      <p><b>दिनांक:</b> 2 फरवरी 2026</p>
-      <p><b>स्थान:</b> बीकानेर</p>
+    <p><b>दिनांक:</b> <span id="date"></span></p>
+    <p><b>स्थान:</b> राजकीय पॉलिटेक्निक कॉलेज ग्राउंड, बीकानेर</p>
 
+    <div class="footer">
+      Certificate Design by Sumit Bishnoi
     </div>
 
-    <div class="buttons">
-      <button onclick="downloadImage()">IMAGE SAVE</button>
-      <button onclick="shareCertificate()">SHARE</button>
+    <div class="site">
+      🌐 https://jeevpremisumit.github.io
     </div>
 
   </div>
 </div>
 
+</div>
+
 <script>
-function updateName(){
-  document.getElementById("nameText").innerText =
-    document.getElementById("username").value || "User Name";
+function generate(){
+  // Name
+  document.getElementById("cname").innerText =
+    document.getElementById("username").value || "__________";
+
+  // Date
+  let d = new Date();
+  document.getElementById("date").innerText =
+    d.getDate()+"-"+(d.getMonth()+1)+"-"+d.getFullYear();
+
+  // Certificate Counter
+  let count = localStorage.getItem("certificateCount");
+  count = count ? parseInt(count)+1 : 1;
+  localStorage.setItem("certificateCount", count);
+  document.getElementById("certNo").innerText =
+    "Certificate No: " + count;
 }
 
-function loadUserPhoto(event){
-  document.getElementById("userPhoto").src =
-    URL.createObjectURL(event.target.files[0]);
+function loadPhoto(input){
+  if(input.files && input.files[0]){
+    let reader = new FileReader();
+    reader.onload = e => {
+      document.getElementById("userPhoto").src = e.target.result;
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
 }
 
 function downloadImage(){
   html2canvas(document.getElementById("certificate")).then(canvas=>{
-    const link = document.createElement("a");
-    link.download = "certificate.png";
-    link.href = canvas.toDataURL();
+    let link=document.createElement("a");
+    link.download="certificate.png";
+    link.href=canvas.toDataURL();
     link.click();
   });
 }
 
-function shareCertificate(){
+function shareImage(){
   html2canvas(document.getElementById("certificate")).then(canvas=>{
     canvas.toBlob(blob=>{
-      const file = new File([blob],"certificate.png",{type:"image/png"});
+      const file=new File([blob],"certificate.png",{type:"image/png"});
       if(navigator.share){
         navigator.share({
           files:[file],
           title:"Certificate",
-          text:"Mera Certificate"
+          text:"Generated from https://jeevpremisumit.github.io"
         });
       }else{
-        alert("Share supported nahi hai");
+        alert("Share not supported");
       }
     });
-  }
-                                                          );
+  });
 }
 </script>
 
 </body>
 </html>
-.certificate{
-  background:#fff;
-  border:8px solid green;
-  padding:25px;
-  text-align:center;
-  position:relative;
-  padding-top:140px;   /* 🔥 YE LINE ADD KARO */
-}
-.logo-left,
-.logo-right{
-  width:90px;
-  height:auto;
-}
-
