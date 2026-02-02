@@ -2,139 +2,155 @@
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
-<title>प्रमाण पत्र Generator</title>
+<title>प्रमाण पत्र</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- html2canvas -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <style>
 body{
-    margin:0;
-    font-family:Arial, sans-serif;
-    background:#eee;
+  margin:0;
+  font-family:Mangal, Arial, sans-serif;
+  background:#eaeaea;
 }
-
-.container{
-    display:flex;
-    flex-wrap:wrap;
+.wrapper{
+  padding:10px;
 }
-
-/* LEFT FORM */
 .form{
-    width:30%;
-    min-width:260px;
-    background:#fff;
-    padding:15px;
+  background:#fff;
+  padding:10px;
+  margin-bottom:10px;
 }
-
 .form input, .form button{
-    width:100%;
-    padding:8px;
-    margin:8px 0;
-    font-size:15px;
+  width:100%;
+  padding:8px;
+  margin-bottom:8px;
+  font-size:15px;
 }
-
-.form button{
-    background:green;
-    color:white;
-    border:none;
-}
-
-/* CERTIFICATE */
-.preview{
-    width:70%;
-    padding:20px;
-}
-
 .certificate{
-    background:white;
-    border:10px solid green;
-    padding:25px;
-    text-align:center;
+  background:#fff;
+  border:6px solid green;
+  padding:25px;
+  text-align:center;
 }
-
-.certificate h1{
-    font-size:32px;
-    margin-bottom:10px;
+.photo{
+  width:130px;
+  margin:10px auto;
+  display:none;
 }
-
-.certificate p{
-    font-size:18px;
-}
-
-.user-photo{
-    width:160px;
-    margin:20px auto;
-    display:none;
-}
-
 .name{
-    font-size:26px;
-    font-weight:bold;
-    margin:15px 0;
+  font-size:26px;
+  font-weight:bold;
+  margin:10px 0;
 }
+.actions{
+  display:flex;
+  gap:10px;
+  margin-top:10px;
+}
+.actions button{
+  flex:1;
+  padding:12px;
+  font-size:16px;
+  border:none;
+  color:#fff;
+}
+.save{background:#007bff;}
+.share{background:#25D366;}
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="wrapper">
 
-<!-- FORM -->
+<!-- USER INPUT -->
 <div class="form">
-    <h3>User Details</h3>
-
-    <label>User Name</label>
-    <input type="text" id="username" placeholder="Enter name">
-
-    <label>User Photo</label>
-    <input type="file" id="photo" accept="image/*">
-
-    <button onclick="generate()">Generate Certificate</button>
+  <input type="text" id="uname" placeholder="अपना नाम लिखें">
+  <input type="file" id="photo" accept="image/*">
+  <button onclick="generate()">प्रमाण पत्र बनाएं</button>
 </div>
 
 <!-- CERTIFICATE -->
-<div class="preview">
-    <div class="certificate">
+<div class="certificate" id="cert">
+  <h1>प्रमाण पत्र</h1>
+  <p>खेजड़ी बचाओ – पर्यावरण बचाओ अभियान</p>
 
-        <h1>प्रमाण पत्र</h1>
-        <p>खेजड़ी बचाओ – पर्यावरण बचाओ अभियान</p>
+  <img id="photoView" class="photo">
 
-        <img id="userPhoto" class="user-photo">
+  <p>यह प्रमाणित किया जाता है कि</p>
+  <div class="name" id="nameText">नाम</div>
 
-        <div class="name" id="showName">---</div>
+  <p>
+    ने खेजड़ी बचाओ – पर्यावरण बचाओ महाअभियान में
+    सक्रिय सहभागिता निभाई।
+  </p>
 
-        <p>
-        यह प्रमाणित किया जाता है कि उपरोक्त व्यक्ति ने
-        पर्यावरण संरक्षण अभियान में सक्रिय सहभागिता निभाई।
-        </p>
+  <p>दिनांक : <b>2 फरवरी 2026</b></p>
+  <p>स्थान : <b>बीकानेर</b></p>
+</div>
 
-        <p><b>दिनांक:</b> 2 फरवरी 2026</p>
-        <p><b>स्थान:</b> बीकानेर</p>
-
-    </div>
+<!-- ACTION BUTTONS -->
+<div class="actions">
+  <button class="save" onclick="saveCert()">Save</button>
+  <button class="share" onclick="shareCert()">Share</button>
 </div>
 
 </div>
 
 <script>
 function generate(){
-    // Name
-    document.getElementById("showName").innerText =
-        document.getElementById("username").value;
+  document.getElementById("nameText").innerText =
+    document.getElementById("uname").value || "नाम";
 
-    // Photo
-    const file = document.getElementById("photo").files[0];
-    if(file){
-        const reader = new FileReader();
-        reader.onload = function(e){
-            const img = document.getElementById("userPhoto");
-            img.src = e.target.result;
-            img.style.display = "block";
-        }
-        reader.readAsDataURL(file);
-    }
+  const file = document.getElementById("photo").files[0];
+  if(file){
+    const r = new FileReader();
+    r.onload = ()=>{
+      const img = document.getElementById("photoView");
+      img.src = r.result;
+      img.style.display = "block";
+    };
+    r.readAsDataURL(file);
+  }
 }
 
+// SAVE – always works
+function saveCert(){
+  html2canvas(document.getElementById("cert"), {scale:2}).then(canvas=>{
+    const a = document.createElement("a");
+    a.href = canvas.toDataURL("image/png");
+    a.download = "praman-patra.png";
+    a.click();
+  });
+}
+
+// SHARE – works on HTTPS mobile (GitHub Pages)
+function shareCert(){
+  html2canvas(document.getElementById("cert"), {scale:2}).then(canvas=>{
+    canvas.toBlob(blob=>{
+      const file = new File([blob], "praman-patra.png", {type:"image/png"});
+
+      if(navigator.canShare && navigator.canShare({files:[file]})){
+        navigator.share({
+          title:"प्रमाण पत्र",
+          text:"मेरा प्रमाण पत्र",
+          files:[file]
+        });
+      }else{
+        // fallback = save
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "praman-patra.png";
+        a.click();
+        alert("Direct share HTTPS (GitHub Pages) par kaam karta hai. Abhi file save ho gayi.");
+      }
+    });
+  });
+}
 </script>
 
+    
 </body>
 </html>
