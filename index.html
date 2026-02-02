@@ -44,7 +44,7 @@ body{
   text-align:center;
 }
 
-/* User Photo */
+/* Photo */
 .user-photo{
   width:160px;
   margin:20px auto;
@@ -90,8 +90,8 @@ body{
 <div class="form">
   <h3>User Details</h3>
 
-  <!-- USER NAME OPTION (FIXED) -->
-  <input type="text" id="username" placeholder="Enter User Name">
+  <!-- USER NAME -->
+  <input type="text" id="username" placeholder="Enter Your Name">
 
   <!-- USER PHOTO -->
   <input type="file" accept="image/*" onchange="loadPhoto(this)">
@@ -104,7 +104,7 @@ body{
   </div>
 </div>
 
-<!-- PREVIEW -->
+<!-- CERTIFICATE -->
 <div class="preview">
   <div class="certificate" id="certificate">
 
@@ -113,8 +113,8 @@ body{
 
     <img id="userPhoto" class="user-photo">
 
-    <!-- USER NAME SHOW -->
-    <div class="name" id="cname">__________</div>
+    <!-- NAME SHOWS HERE -->
+    <div class="name" id="cname">Your Name</div>
 
     <p>
       यह प्रमाणित किया जाता है कि उपरोक्त व्यक्ति ने
@@ -122,7 +122,7 @@ body{
     </p>
 
     <p><b>दिनांक:</b> <span id="date"></span></p>
-    <p><b>स्थान:</b> राजकीय पॉलिटेक्निक कॉलेज ग्राउंड, बीकानेर</p>
+    <p><b>स्थान:</b> बीकानेर</p>
 
     <div class="footer">
       Certificate Design by Sumit Bishnoi
@@ -139,10 +139,10 @@ body{
 
 <script>
 function generate(){
-  // USER NAME
+  // NAME (100% WORKING)
   let name = document.getElementById("username").value;
   document.getElementById("cname").innerText =
-    name ? name : "__________";
+    name ? name : "Your Name";
 
   // DATE
   let d = new Date();
@@ -153,7 +153,7 @@ function generate(){
 function loadPhoto(input){
   if(input.files && input.files[0]){
     let reader = new FileReader();
-    reader.onload = e => {
+    reader.onload = function(e){
       document.getElementById("userPhoto").src = e.target.result;
     };
     reader.readAsDataURL(input.files[0]);
@@ -162,9 +162,9 @@ function loadPhoto(input){
 
 function downloadImage(){
   html2canvas(document.getElementById("certificate")).then(canvas=>{
-    let link=document.createElement("a");
-    link.download="certificate.png";
-    link.href=canvas.toDataURL();
+    let link = document.createElement("a");
+    link.download = "certificate.png";
+    link.href = canvas.toDataURL();
     link.click();
   });
 }
@@ -172,7 +172,7 @@ function downloadImage(){
 function shareImage(){
   html2canvas(document.getElementById("certificate")).then(canvas=>{
     canvas.toBlob(blob=>{
-      const file=new File([blob],"certificate.png",{type:"image/png"});
+      const file = new File([blob],"certificate.png",{type:"image/png"});
       if(navigator.share){
         navigator.share({
           files:[file],
@@ -180,7 +180,7 @@ function shareImage(){
           text:"Generated from https://jeevpremisumit.github.io"
         });
       }else{
-        alert("Share not supported on this device");
+        alert("Share not supported");
       }
     });
   });
