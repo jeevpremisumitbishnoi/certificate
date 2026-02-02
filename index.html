@@ -146,3 +146,25 @@ function shareCert(){
   }
 
 }
+<button type="button" onclick="downloadCertificate()">DONE (Download)</button>
+<button type="button" onclick="shareCertificate()">SHARE</button>
+<button onclick="downloadCertificate()">DONE (Download)</button>
+<button onclick="shareCertificate()">SHARE</button>
+<script>
+function downloadCertificate(){
+  window.print();
+}
+
+function shareCertificate(){
+  if(navigator.share){
+    navigator.share({
+      title: 'Certificate',
+      text: 'Maine apna certificate banaya',
+      url: window.location.href
+    });
+  } else {
+    alert("Share option is device me supported nahi hai");
+  }
+}
+</script
+  >
