@@ -41,35 +41,10 @@ body{
   background:#fff;
   border:8px solid green;
   padding:30px;
-  position:relative;
   text-align:center;
 }
 
-/* Logos */
-.logo-left{
-  position:absolute;
-  top:20px;
-  left:20px;
-  width:80px;
-}
-.logo-right{
-  position:absolute;
-  top:20px;
-  right:20px;
-  width:80px;
-}
-
-/* Certificate Number */
-.cert-no{
-  position:absolute;
-  top:20px;
-  left:50%;
-  transform:translateX(-50%);
-  font-weight:bold;
-  font-size:14px;
-}
-
-/* Photo */
+/* User Photo */
 .user-photo{
   width:160px;
   margin:20px auto;
@@ -114,8 +89,13 @@ body{
 <!-- FORM -->
 <div class="form">
   <h3>User Details</h3>
-  <input type="text" id="username" placeholder="User Name">
+
+  <!-- USER NAME OPTION (FIXED) -->
+  <input type="text" id="username" placeholder="Enter User Name">
+
+  <!-- USER PHOTO -->
   <input type="file" accept="image/*" onchange="loadPhoto(this)">
+
   <button onclick="generate()">Generate Certificate</button>
 
   <div class="buttons">
@@ -128,16 +108,12 @@ body{
 <div class="preview">
   <div class="certificate" id="certificate">
 
-    <div class="cert-no" id="certNo">Certificate No: 0</div>
-
-    <img src="logo-left.png" class="logo-left">
-    <img src="logo-right.png" class="logo-right">
-
     <h1>प्रमाण पत्र</h1>
     <p>खेजड़ी बचाओ – पर्यावरण बचाओ अभियान</p>
 
     <img id="userPhoto" class="user-photo">
 
+    <!-- USER NAME SHOW -->
     <div class="name" id="cname">__________</div>
 
     <p>
@@ -163,21 +139,15 @@ body{
 
 <script>
 function generate(){
-  // Name
+  // USER NAME
+  let name = document.getElementById("username").value;
   document.getElementById("cname").innerText =
-    document.getElementById("username").value || "__________";
+    name ? name : "__________";
 
-  // Date
+  // DATE
   let d = new Date();
   document.getElementById("date").innerText =
     d.getDate()+"-"+(d.getMonth()+1)+"-"+d.getFullYear();
-
-  // Certificate Counter
-  let count = localStorage.getItem("certificateCount");
-  count = count ? parseInt(count)+1 : 1;
-  localStorage.setItem("certificateCount", count);
-  document.getElementById("certNo").innerText =
-    "Certificate No: " + count;
 }
 
 function loadPhoto(input){
@@ -210,7 +180,7 @@ function shareImage(){
           text:"Generated from https://jeevpremisumit.github.io"
         });
       }else{
-        alert("Share not supported");
+        alert("Share not supported on this device");
       }
     });
   });
