@@ -5,79 +5,64 @@
 <title>प्रमाण पत्र Generator</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
 <style>
 body{
-    margin:0;
-    padding:0;
-    background:#eee;
-    font-family: Arial, sans-serif;
+  margin:0;
+  font-family: Arial, sans-serif;
+  background:#eee;
 }
-
 .container{
-    display:flex;
-    flex-wrap:wrap;
+  display:flex;
+  flex-wrap:wrap;
 }
-
-/* LEFT FORM */
 .form{
-    width:30%;
-    min-width:260px;
-    background:#fff;
-    padding:15px;
+  width:30%;
+  min-width:260px;
+  background:#fff;
+  padding:15px;
 }
-
 .form input, .form button{
-    width:100%;
-    margin:8px 0;
-    padding:8px;
-    font-size:15px;
+  width:100%;
+  margin:8px 0;
+  padding:10px;
 }
-
-.form button{
-    background:green;
-    color:white;
-    border:none;
-    cursor:pointer;
-}
-
-/* RIGHT PREVIEW */
 .preview{
-    width:70%;
-    padding:20px;
+  width:70%;
+  padding:20px;
 }
-
 .certificate{
-    background:white;
-    border:10px solid green;
-    padding:25px;
-    text-align:center;
+  background:#fff;
+  border:8px solid green;
+  padding:25px;
+  text-align:center;
 }
-
-.certificate h1{
-    margin:10px 0;
-    font-size:32px;
-}
-
-.certificate p{
-    font-size:18px;
-}
-
 .user-photo{
-    width:160px;
-    margin:20px auto;
-    display:block;
+  width:150px;
+  margin:15px auto;
+  display:block;
 }
-
 .name{
-    font-size:26px;
-    font-weight:bold;
-    margin:15px 0;
+  font-size:24px;
+  font-weight:bold;
+  margin:10px 0;
 }
-
 .footer{
-    margin-top:20px;
-    font-size:18px;
-    font-weight:bold;
+  margin-top:20px;
+  font-size:12px;
+  color:#555;
+}
+.buttons{
+  margin-top:15px;
+}
+.buttons button{
+  padding:10px 15px;
+  margin:5px;
+  background:green;
+  color:white;
+  border:none;
+  font-size:16px;
 }
 </style>
 </head>
@@ -86,60 +71,96 @@ body{
 
 <div class="container">
 
-<!-- FORM -->
-<div class="form">
+  <!-- FORM -->
+  <div class="form">
     <h3>User Details</h3>
 
     <label>User Name</label>
-    <input type="text" id="username" placeholder="Enter Name">
+    <input type="text" id="username" placeholder="Enter name">
 
     <label>User Photo</label>
-    <input type="file" id="photo" accept="image/*">
+    <input type="file" accept="image/*" onchange="loadPhoto(this)">
 
     <button onclick="generate()">Generate Certificate</button>
-</div>
+  </div>
 
-<!-- PREVIEW -->
-<div class="preview">
+  <!-- PREVIEW -->
+  <div class="preview">
     <div class="certificate" id="certificate">
 
-        <h1>प्रमाण पत्र</h1>
+      <h1>प्रमाण पत्र</h1>
+      <p>खेजड़ी बचाओ – पर्यावरण बचाओ अभियान</p>
 
-        <p>खेजड़ी बचाओ – पर्यावरण बचाओ अभियान</p>
+      <img id="userPhoto" class="user-photo">
 
-        <img id="userPhoto" class="user-photo">
+      <div class="name" id="cname">_______</div>
 
-        <div class="name" id="showName">---</div>
-
-        <p>
+      <p>
         यह प्रमाणित किया जाता है कि उपरोक्त व्यक्ति ने
-        पर्यावरण संरक्षण अभियान में सक्रिय सहभागिता निभाई।
-        </p>
+        खेजड़ी बचाओ अभियान में सक्रिय सहभागिता निभाई। अपना अमूल्य वक्त देने के लिए हम आपके आभारी हैं।
+      </p>
 
-        <p><b>दिनांक:</b> 2 फरवरी 2026</p>
-        <p><b>स्थान:</b> बीकानेर</p>
+      <p><b>दिनांक:</b> 2 फरवरी 2026</p>
+      <p><b>स्थान:</b> बीकानेर</p>
+
+      <div class="footer">
+        Design by Sumit Bishnoi <br>
+        Website: https://jeevpremisumitbishnoi.github.io/certificate/
+      </div>
 
     </div>
-</div>
+
+    <div class="buttons">
+      <button onclick="saveImage()">Save Image</button>
+      <button onclick="shareImage()">Share</button>
+    </div>
+  </div>
 
 </div>
 
 <script>
 function generate(){
-    const name = document.getElementById("username").value;
-    document.getElementById("showName").innerText = name;
-
-    const photoInput = document.getElementById("photo");
-    if(photoInput.files.length > 0){
-        const reader = new FileReader();
-        reader.onload = function(e){
-            document.getElementById("userPhoto").src = e.target.result;
-        }
-        reader.readAsDataURL(photoInput.files[0]);
-    }
-
+  const name = document.getElementById("username").value;
+  document.getElementById("cname").innerText = name || "_______";
 }
-</script>
+
+function loadPhoto(input){
+  if(input.files && input.files[0]){
+    const reader = new FileReader();
+    reader.onload = e => {
+      document.getElementById("userPhoto").src = e.target.result;
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+function saveImage(){
+  html2canvas(document.getElementById("certificate")).then(canvas=>{
+    const link = document.createElement("a");
+    link.download = "certificate.png";
+    link.href = canvas.toDataURL();
+    link.click();
+  });
+}
+
+function shareImage(){
+  html2canvas(document.getElementById("certificate")).then(canvas=>{
+    canvas.toBlob(blob=>{
+      const file = new File([blob], "certificate.png", {type:"image/png"});
+      if(navigator.share){
+        navigator.share({
+          files:[file],
+          title:"Certificate",
+          text:"My Certificate"
+        });
+      }else{
+        alert("Share not supported on this browser");
+      }
+    });
+  });
+}
+</scr
+    ipt>
 
 </body>
 </html>
