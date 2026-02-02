@@ -123,3 +123,26 @@ function loadPhoto(event){
 
 </body>
 </html>
+<button onclick="downloadCert()">Download Certificate</button>
+<button onclick="shareCert()">Share Certificate</button>
+<div class="form">
+  ...
+  <button onclick="downloadCert()">Download Certificate</button>
+  <button onclick="shareCert()">Share Certificate</button>
+</div>
+function downloadCert(){
+  alert("Next step me PDF download add karenge 🙂");
+}
+
+function shareCert(){
+  if(navigator.share){
+    navigator.share({
+      title: 'My Certificate',
+      text: 'Maine apna certificate generate kiya',
+      url: window.location.href
+    });
+  } else {
+    alert("Share option is device me supported nahi hai");
+  }
+
+}
