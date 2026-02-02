@@ -8,8 +8,9 @@
 <style>
 body{
     margin:0;
-    font-family:Arial, sans-serif;
+    padding:0;
     background:#eee;
+    font-family: Arial, sans-serif;
 }
 
 .container{
@@ -27,8 +28,8 @@ body{
 
 .form input, .form button{
     width:100%;
-    padding:8px;
     margin:8px 0;
+    padding:8px;
     font-size:15px;
 }
 
@@ -36,9 +37,10 @@ body{
     background:green;
     color:white;
     border:none;
+    cursor:pointer;
 }
 
-/* CERTIFICATE */
+/* RIGHT PREVIEW */
 .preview{
     width:70%;
     padding:20px;
@@ -52,8 +54,8 @@ body{
 }
 
 .certificate h1{
+    margin:10px 0;
     font-size:32px;
-    margin-bottom:10px;
 }
 
 .certificate p{
@@ -63,13 +65,19 @@ body{
 .user-photo{
     width:160px;
     margin:20px auto;
-    display:none;
+    display:block;
 }
 
 .name{
     font-size:26px;
     font-weight:bold;
     margin:15px 0;
+}
+
+.footer{
+    margin-top:20px;
+    font-size:18px;
+    font-weight:bold;
 }
 </style>
 </head>
@@ -83,7 +91,7 @@ body{
     <h3>User Details</h3>
 
     <label>User Name</label>
-    <input type="text" id="username" placeholder="Enter name">
+    <input type="text" id="username" placeholder="Enter Name">
 
     <label>User Photo</label>
     <input type="file" id="photo" accept="image/*">
@@ -91,11 +99,12 @@ body{
     <button onclick="generate()">Generate Certificate</button>
 </div>
 
-<!-- CERTIFICATE -->
+<!-- PREVIEW -->
 <div class="preview">
-    <div class="certificate">
+    <div class="certificate" id="certificate">
 
         <h1>प्रमाण पत्र</h1>
+
         <p>खेजड़ी बचाओ – पर्यावरण बचाओ अभियान</p>
 
         <img id="userPhoto" class="user-photo">
@@ -104,7 +113,7 @@ body{
 
         <p>
         यह प्रमाणित किया जाता है कि उपरोक्त व्यक्ति ने
-        खेजड़ी बचाओ अभियान में सक्रिय सहभागिता निभाई। और पूर्ण निष्ठा से आंदोलन में भाग लिया । 
+        पर्यावरण संरक्षण अभियान में सक्रिय सहभागिता निभाई।
         </p>
 
         <p><b>दिनांक:</b> 2 फरवरी 2026</p>
@@ -117,21 +126,18 @@ body{
 
 <script>
 function generate(){
-    // Name
-    document.getElementById("showName").innerText =
-        document.getElementById("username").value;
+    const name = document.getElementById("username").value;
+    document.getElementById("showName").innerText = name;
 
-    // Photo
-    const file = document.getElementById("photo").files[0];
-    if(file){
+    const photoInput = document.getElementById("photo");
+    if(photoInput.files.length > 0){
         const reader = new FileReader();
         reader.onload = function(e){
-            const img = document.getElementById("userPhoto");
-            img.src = e.target.result;
-            img.style.display = "block";
+            document.getElementById("userPhoto").src = e.target.result;
         }
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(photoInput.files[0]);
     }
+
 }
 </script>
 
