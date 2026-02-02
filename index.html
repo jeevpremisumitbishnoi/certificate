@@ -1,163 +1,120 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html>
 <head>
 <meta charset="UTF-8">
 <title>Certificate Generator</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<!-- html2canvas -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
 body{
+  font-family: Arial, sans-serif;
+  background:#f0f0f0;
   margin:0;
-  font-family:Arial, sans-serif;
-  background:#eee;
 }
-.container{
+.wrapper{
   display:flex;
   flex-wrap:wrap;
 }
 .form{
-  width:30%;
-  min-width:260px;
+  width:100%;
+  max-width:300px;
   background:#fff;
   padding:15px;
 }
-.form input,.form button{
+.form input, .form button{
   width:100%;
   padding:10px;
   margin:8px 0;
 }
-.preview{
-  width:70%;
+.certificate-box{
+  flex:1;
   padding:20px;
 }
 .certificate{
   background:#fff;
-  border:8px solid green;
-  padding:25px;
+  border:6px solid green;
+  padding:20px;
   text-align:center;
 }
-.user-photo{
-  width:150px;
-  margin:15px auto;
+#userImage{
+  width:140px;
+  margin:10px auto;
   display:none;
 }
-.name{
+#userName{
   font-size:24px;
   font-weight:bold;
+  margin:10px 0;
 }
 .footer{
-  margin-top:20px;
   font-size:12px;
+  margin-top:15px;
   color:#555;
-}
-.buttons button{
-  padding:10px 15px;
-  margin:5px;
-  background:green;
-  color:#fff;
-  border:none;
-  font-size:16px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="wrapper">
 
-<!-- FORM -->
-<div class="form">
-  <h3>User Details</h3>
+  <div class="form">
+    <h3>User Details</h3>
 
-  <input type="text" id="username" placeholder="Enter your name">
+    <input type="text" id="nameInput" placeholder="Enter your name">
 
-  <input type="file" id="photo" accept="image/*">
+    <input type="file" id="imageInput" accept="image/*">
 
-  <button onclick="generateCertificate()">Generate Certificate</button>
-</div>
+    <button id="generateBtn">Generate Certificate</button>
+  </div>
 
-<!-- PREVIEW -->
-<div class="preview">
-  <div class="certificate" id="certificate">
+  <div class="certificate-box">
+    <div class="certificate">
 
-    <h1>प्रमाण पत्र</h1>
-    <p>खेजड़ी बचाओ – पर्यावरण बचाओ अभियान</p>
+      <h2>प्रमाण पत्र</h2>
+      <p>खेजड़ी बचाओ – पर्यावरण बचाओ अभियान</p>
 
-    <img id="userPhoto" class="user-photo">
+      <img id="userImage">
 
-    <div class="name" id="displayName">________</div>
+      <div id="userName">_____</div>
 
-    <p>
-      यह प्रमाणित किया जाता है कि उपरोक्त व्यक्ति ने
-      पर्यावरण संरक्षण अभियान में सक्रिय सहभागिता निभाई।
-    </p>
+      <p>
+        यह प्रमाणित किया जाता है कि उपरोक्त व्यक्ति ने
+        पर्यावरण संरक्षण अभियान में सहभागिता निभाई।
+      </p>
 
-    <p><b>दिनांक:</b> 2 फरवरी 2026</p>
+      <p><b>दिनांक:</b> 2 फरवरी 2026</p>
 
-    <div class="footer">
-      Design by Sumit Bishnoi<br>
-      https://jeevpremisumitbishnoi.github.io/certificate/
+      <div class="footer">
+        Design by Sumit Bishnoi<br>
+        jeevpremisumitbishnoi.github.io/certificate
+      </div>
+
     </div>
-
   </div>
-
-  <div class="buttons">
-    <button onclick="saveImage()">Save Image</button>
-    <button onclick="shareImage()">Share</button>
-  </div>
-</div>
 
 </div>
 
 <script>
-function generateCertificate(){
-  const name = document.getElementById("username").value.trim();
-  document.getElementById("displayName").innerText =
-    name ? name : "________";
+document.getElementById("generateBtn").onclick = function(){
 
-  const file = document.getElementById("photo").files[0];
+  var name = document.getElementById("nameInput").value;
+  document.getElementById("userName").innerText =
+    name ? name : "_____";
+
+  var file = document.getElementById("imageInput").files[0];
   if(file){
-    const reader = new FileReader();
-    reader.onload = e=>{
-      const img = document.getElementById("userPhoto");
+    var reader = new FileReader();
+    reader.onload = function(e){
+      var img = document.getElementById("userImage");
       img.src = e.target.result;
-      img.style.display="block";
-    };
+      img.style.display = "block";
+    }
     reader.readAsDataURL(file);
   }
 }
-
-function saveImage(){
-  html2canvas(document.getElementById("certificate")).then(canvas=>{
-    const link=document.createElement("a");
-    link.download="certificate.png";
-    link.href=canvas.toDataURL("image/png");
-    link.click();
-  });
-}
-
-function shareImage(){
-  html2canvas(document.getElementById("certificate")).then(canvas=>{
-    canvas.toBlob(blob=>{
-      const file=new File([blob],"certificate.png",{type:"image/png"});
-      if(navigator.share){
-        navigator.share({
-          files:[file],
-          title:"My Certificate",
-          text:"Check my certificate"
-        });
-      }else{
-        // fallback
-        saveImage();
-      }
-    });
-  });
-}
-</scr
-  ipt>
+</script
+  >
 
 </body>
 </html>
